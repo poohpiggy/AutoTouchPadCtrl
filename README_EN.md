@@ -2,7 +2,7 @@
 
 Touchpad automatic management tool for Chromebook third\-party drivers
 
-Designed for convertible Chromebook running Windows with third\-party ported drivers\. These devices lack complete official adaptation, and the built\-in driver cannot link touchpad with tablet mode\. The touchpad stays active after flipping, causing accidental clicks and random cursor movement during touch and stylus use\.
+Designed for convertible Chromebook running Windows with third\-party ported drivers\  (Lenovo Flex 5 Chromebook/Google Akemi) . These devices lack complete official adaptation, and the built\-in driver cannot link touchpad with tablet mode\. The touchpad stays active after flipping, causing accidental clicks and random cursor movement during touch and stylus use\.
 
 This self\-tweaked script disables the touchpad automatically when entering tablet mode and restores it while switching back to desktop mode, fixing common daily usage issues\.
 
