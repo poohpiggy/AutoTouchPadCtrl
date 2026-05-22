@@ -8,8 +8,8 @@ This self\-tweaked script disables the touchpad automatically when entering tabl
 
 ## Version Info
 
-Current Version: **V1 Basic**
-Judgment depends on system tablet mode status\. Hardware posture detection will be added in future updates for more accurate recognition without UI restriction\.
+Current Version: **V2**
+Judgment depends on system AutoRotate status\. Hardware posture detection will be added in future updates for more accurate recognition without UI restriction\.
 
 ## Features
 
@@ -30,11 +30,11 @@ Judgment depends on system tablet mode status\. Hardware posture detection will 
 ## Working Principle
 
 Read tablet mode status from system registry
-`HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ImmersiveShell\\TabletMode`
+`HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl - ConvertibleSlateMode`
 
-- Value 1: Tablet Mode enabled, touchpad disabled automatically
+- Value 1: Tablet Mode disabled, touchpad resumes normal use
 
-- Value 0: Tablet Mode disabled, touchpad resumes normal use
+- Value 0: Tablet Mode enabled, touchpad disabled automatically
 
 The script records previous state and avoids unnecessary repeated operations\.
 
