@@ -8,8 +8,8 @@ Chromebook 第三方驱动专用 \| 平板模式自动管控触控板
 
 ## 版本说明
 
-当前版本：**V2**
-现阶段依靠系统自动旋转模式启用与否判定运行，后续会迭代更新。
+当前版本：**V3**
+现阶段依靠翻转判定运行。
 
 ## 功能特点
 
@@ -29,7 +29,7 @@ Chromebook 第三方驱动专用 \| 平板模式自动管控触控板
 
 ## 运行原理
 
-实时读取注册表内平板模式状态
+实时读取注册表状态
 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl 中的 ConvertibleSlateMode`
 
   0 = 平板模式 → 禁用触摸板
