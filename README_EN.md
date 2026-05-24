@@ -8,8 +8,8 @@ This self\-tweaked script disables the touchpad automatically when entering tabl
 
 ## Version Info
 
-Current Version: **V2**
-Judgment depends on system AutoRotate status\. Hardware posture detection will be added in future updates for more accurate recognition without UI restriction\.
+Current Version: **V3**
+Judgment depends on ConvertibleSlateMode status\. Hardware posture detection will be added in future updates for more accurate recognition without UI restriction\.
 
 ## Features
 
