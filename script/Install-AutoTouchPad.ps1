@@ -1,20 +1,17 @@
-﻿# 自动提权
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+﻿if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Start-Process powershell.exe "-ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     exit
 }
 
+$dest = "$env:ProgramData\AutoTouchPadCtrl.ps1"
+
 $code = @'
 while(1) {
     try {
-        # 读取硬件翻转模式值
         $mode = Get-ItemPropertyValue "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" ConvertibleSlateMode
-    } catch { 
+    } catch {
         $mode = 1
     }
-
-    # 0 = 平板模式 → 禁用触摸板
-    # 1 = 笔记本模式 → 启用触摸板
     if ($mode -eq 0) {
         Disable-PnpDevice "ACPI\ELAN0000\0" -Confirm:$false -ErrorAction SilentlyContinue
     } else {
@@ -24,14 +21,16 @@ while(1) {
 }
 '@
 
-$dest = "C:\Windows\AutoTouchPadCtrl.ps1"
 $code | Out-File $dest -Encoding UTF8 -Force
 
-# 开机自启
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "AutoTouchPadCtrl" -Value "powershell -WindowStyle Hidden -File `"$dest`"" -Force
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$dest`""
+$trigger = New-ScheduledTaskTrigger -AtLogon
+$principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
 
-# 启动后台进程
-Start-Process powershell.exe "-WindowStyle Hidden -File `"$dest`""
+Register-ScheduledTask -TaskName "AutoTouchPadCtrl" -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force
 
-Write-Host "`n[√] 安装成功`n"
-Read-Host "按回车关闭"
+Start-ScheduledTask -TaskName "AutoTouchPadCtrl"
+
+Write-Host "`n[√] 安装完成`n"
+Read-Host "回车关闭"
