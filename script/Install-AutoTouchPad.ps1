@@ -1,4 +1,4 @@
-锘縤f (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Start-Process powershell.exe "-ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     exit
 }
@@ -6,18 +6,22 @@
 $dest = "$env:ProgramData\AutoTouchPadCtrl.ps1"
 
 $code = @'
+$lastMode = $null
 while(1) {
     try {
-        $mode = Get-ItemPropertyValue "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" ConvertibleSlateMode
+        $currentMode = Get-ItemPropertyValue "HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl" ConvertibleSlateMode
     } catch {
-        $mode = 1
+        $currentMode = 1
     }
-    if ($mode -eq 0) {
-        Disable-PnpDevice "ACPI\ELAN0000\0" -Confirm:$false -ErrorAction SilentlyContinue
-    } else {
-        Enable-PnpDevice "ACPI\ELAN0000\0" -Confirm:$false -ErrorAction SilentlyContinue
+    if($currentMode -ne $lastMode){
+        if ($currentMode -eq 0) {
+            Disable-PnpDevice "ACPI\ELAN0000\0" -Confirm:$false -ErrorAction SilentlyContinue
+        } else {
+            Enable-PnpDevice "ACPI\ELAN0000\0" -Confirm:$false -ErrorAction SilentlyContinue
+        }
+        $lastMode = $currentMode
     }
-    Start-Sleep 1
+    Start-Sleep 2
 }
 '@
 
@@ -32,5 +36,5 @@ Register-ScheduledTask -TaskName "AutoTouchPadCtrl" -Action $action -Trigger $tr
 
 Start-ScheduledTask -TaskName "AutoTouchPadCtrl"
 
-Write-Host "`n[鈭歖 瀹夎瀹屾垚`n"
-Read-Host "鍥炶溅鍏抽棴"
+Write-Host "`n[√] V4 优化版，降低WMI负载，安装完成`n"
+Read-Host "回车关闭"
